@@ -45,14 +45,13 @@ fn main() {
     let a = SomeStructA {};
     let b = some_handle(&mut err, &a);
     if b.is_none() || err.catch() {
-        println!("catch some error");
+        println!("----error report----\n{}\n---- auto repeat error and log record ----", err.err_msg());
         let mut reporter = str_error::reporter();
         some_handle(&mut reporter, &a);
-        println!("{:?}", err.err.unwrap());
         for u in &reporter.reporter.data {
             println!("{}", u)
         }
-        println!("end of program");
+        println!("----end of report----");
         return;
     }
     println!("if normal")

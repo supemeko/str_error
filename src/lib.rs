@@ -33,7 +33,7 @@ impl Reporter for () {
 }
 
 pub struct DefaultStrError<T: Reporter> {
-    pub err: Option<[char; 20]>,
+    pub err: Option<[char; 30]>,
     pub reporter: T,
 }
 
@@ -53,9 +53,9 @@ impl<T: Reporter> StrError for DefaultStrError<T> {
     }
 
     fn throws(&mut self, msg: &str) {
-        let mut char = ['\0'; 20];
+        let mut char = ['\0'; 30];
         for (i, c) in msg.chars().enumerate() {
-            if i < 20 {
+            if i < 30 {
                 char[i] = c;
             } else {
                 break;
@@ -90,7 +90,7 @@ impl DefaultStrError<DefaultReporter> {
 }
 
 impl DefaultStrError<()> {
-    pub fn err_msg(&self) -> Option<String> {
+    pub fn err_msg(&mut self) -> String {
         match self.err {
             Some(msg) => {
                 let mut f = String::new();
@@ -100,9 +100,12 @@ impl DefaultStrError<()> {
                     }
                     f.push(c);
                 }
-                Some(f)
+                f
             }
-            None => None,
+            None => {
+                self.throws("manual execution err_msg();");
+                self.err_msg()
+            }
         }
     }
 }
